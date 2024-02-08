@@ -39,7 +39,30 @@ export function NewNoteCard({ onNoteCreated }: NewNoteCardProps) {
     }
 
     function handleStartRecording() {
+        const isSpeechRecognitionAPIAvailable = 'SpeechRecognition' in window
+            || 'webkitSpeechRecognition' in window
+
+        if (!isSpeechRecognitionAPIAvailable) {
+            alert('Infelizmente seu navegador não suporta a API de gravação!')
+            return
+        }
+
         setIsRecording(true)
+
+        const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition
+        
+        const speechRecognition = new SpeechRecognitionAPI()
+
+        speechRecognition.lang = 'pt-BR'
+        speechRecognition.continuous = true
+        speechRecognition.maxAlternatives = 1
+        speechRecognition.interimResults = true
+
+        speechRecognition.onresult = event => console.log(event.results)
+
+        speechRecognition.onerror = event => console.error(event)
+
+        speechRecognition.start()
     }
 
     function handleStopRecording () {
