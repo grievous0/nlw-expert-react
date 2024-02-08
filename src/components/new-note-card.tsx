@@ -48,6 +48,7 @@ export function NewNoteCard({ onNoteCreated }: NewNoteCardProps) {
         }
 
         setIsRecording(true)
+        setShouldShowOnboarding(false)
 
         const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition
         
@@ -58,7 +59,13 @@ export function NewNoteCard({ onNoteCreated }: NewNoteCardProps) {
         speechRecognition.maxAlternatives = 1
         speechRecognition.interimResults = true
 
-        speechRecognition.onresult = event => console.log(event.results)
+        speechRecognition.onresult = event => {
+            const transcription = Array.from(event.results).reduce((text, result) => {
+                return text.concat(result[0].transcript)
+            }, '')
+
+            setContent(transcription)
+        }
 
         speechRecognition.onerror = event => console.error(event)
 
