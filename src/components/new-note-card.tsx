@@ -7,10 +7,13 @@ interface NewNoteCardProps {
     onNoteCreated: (content: string) => void
 }
 
+let speechRecognition: SpeechRecognition | null = null
+
 export function NewNoteCard({ onNoteCreated }: NewNoteCardProps) {
     const [shouldShowOnboarding, setShouldShowOnboarding] = useState(true)
     const [content, setContent] = useState('')
     const [isRecording, setIsRecording] = useState(false)
+
 
     function handleStartEditor() {
         setShouldShowOnboarding(false)
@@ -52,7 +55,7 @@ export function NewNoteCard({ onNoteCreated }: NewNoteCardProps) {
 
         const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition
         
-        const speechRecognition = new SpeechRecognitionAPI()
+        speechRecognition = new SpeechRecognitionAPI()
 
         speechRecognition.lang = 'pt-BR'
         speechRecognition.continuous = true
@@ -72,8 +75,10 @@ export function NewNoteCard({ onNoteCreated }: NewNoteCardProps) {
         speechRecognition.start()
     }
 
-    function handleStopRecording () {
+    function handleStopRecording() {
         setIsRecording(false)
+
+        if (speechRecognition != null) speechRecognition.stop()
     }
 
     return (
