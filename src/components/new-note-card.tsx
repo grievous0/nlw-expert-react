@@ -25,6 +25,11 @@ export function NewNoteCard({ onNoteCreated }: NewNoteCardProps) {
     function handleSaveNote(event: FormEvent) {
         event.preventDefault()
 
+        if (content === '') {
+            toast.warning('Adicione algum conteúdo antes de salvar.')
+            return
+        }
+
         onNoteCreated(content)
 
         setContent('')
